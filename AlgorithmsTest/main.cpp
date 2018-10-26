@@ -88,11 +88,11 @@ void runTest() {
 	mergeSort(testingArr, 0, SIZE - 1);
 	endTime = clock();
 	cout << "Merge Sort Runtime: " << endTime - startTime << endl;
-	cout << "Merge Sort Result: " << endl;
+	/*cout << "Merge Sort Result: " << endl;
 	for (int i = 0; i < SIZE; ++i) {
 		cout << testingArr[i] << ' ';
 		if ((i + 1) % 10 == 0) cout << endl;
-	}
+	}*/
 }
 
 // ==================== Sorting Functions ====================
