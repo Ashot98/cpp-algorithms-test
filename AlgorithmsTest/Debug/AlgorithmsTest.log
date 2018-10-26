@@ -1,3 +1,2 @@
 ﻿  main.cpp
-e:\cpp\projects\algorithmstest\algorithmstest\main.cpp(29): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
   AlgorithmsTest.vcxproj -> E:\Cpp\Projects\AlgorithmsTest\Debug\AlgorithmsTest.exe
