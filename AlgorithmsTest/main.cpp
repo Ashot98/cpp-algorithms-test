@@ -17,10 +17,17 @@ void runTest();
 void bubbleSort(int *, int);
 void insertionSort(int *, int);
 void mergeSort(int *, int, int);
+void heapSort(int *, int);
 
 // ==================== Helper Functions ====================
 void swap(int &, int &);
 void merge(int *, int, int, int);
+int getParent(int);
+int getLeftChild(int);
+int getRightChild(int);
+void shiftUp(int *, int);
+void shiftDown(int *, int, int);
+int extractMin(int *, int);
 
 // ==================== MAIN ====================
 int main() {
@@ -93,6 +100,21 @@ void runTest() {
 		cout << testingArr[i] << ' ';
 		if ((i + 1) % 10 == 0) cout << endl;
 	}*/
+
+	// ==================== Heap Sort ====================
+	for (int i = 0; i < SIZE; ++i) {
+		testingArr[i] = inputArr[i];
+	}
+	cout << "Starting Heap Sort" << endl;
+	startTime = clock();
+	heapSort(testingArr, SIZE);
+	endTime = clock();
+	cout << "Heap Sort Runtime: " << endTime - startTime << endl;
+	/*cout << "Heap Sort Result: " << endl;
+	for (int i = 0; i < SIZE; ++i) {
+		cout << testingArr[i] << ' ';
+		if ((i + 1) % 10 == 0) cout << endl;
+	}*/
 }
 
 // ==================== Sorting Functions ====================
@@ -124,6 +146,19 @@ void mergeSort(int *arr, int start, int end) {
 		mergeSort(arr, mid + 1, end);
 
 		merge(arr, start, mid, end);
+	}
+}
+
+void heapSort(int *arr, int size) {
+	int *heapArr = new int[size];
+
+	for (int i = 0; i < size; ++i) {
+		heapArr[i] = arr[i];
+		shiftUp(heapArr, i);
+	}
+
+	for (int i = 0; i < size; ++i) {
+		arr[i] = extractMin(heapArr, size - i);
 	}
 }
 
@@ -173,4 +208,53 @@ void merge(int *arr, int start, int mid, int end) {
 		++k;
 		++j;
 	}
+}
+
+int getParent(int index) {
+	return (index + 1) / 2 - 1;
+}
+
+int getLeftChild(int index) {
+	return 2 * (index + 1 ) - 1;
+}
+
+int getRightChild(int index) {
+	return 2 *(index + 1);
+}
+
+void shiftUp(int *heap, int i) {
+	if (i == 0) return;
+
+	int parentIndex = getParent(i);
+
+	if (heap[parentIndex] > heap[i]) {
+		swap(heap[parentIndex], heap[i]);
+		shiftUp(heap, parentIndex);
+	}
+}
+
+void shiftDown(int *heap, int i, int size) {
+	int leftChildIndex = getLeftChild(i);
+	int rightChildIndex = getRightChild(i);
+
+	if (leftChildIndex < size && rightChildIndex < size) {
+		int minIndex = (heap[leftChildIndex] < heap[rightChildIndex]) ? leftChildIndex : rightChildIndex;
+		if (heap[i] > heap[minIndex]) {
+			swap(heap[i], heap[minIndex]);
+			shiftDown(heap, minIndex, size);
+		}
+	}
+	else if (leftChildIndex < size && heap[i] > heap[leftChildIndex]) {
+		swap(heap[i], heap[leftChildIndex]);
+	}
+	else if (rightChildIndex < size && heap[i] > heap[rightChildIndex]) {
+		swap(heap[i], heap[rightChildIndex]);
+	}
+}
+
+int extractMin(int *heap, int size) {
+	swap(heap[0], heap[size - 1]);
+	shiftDown(heap, 0, size - 1);
+
+	return heap[size - 1];
 }
