@@ -10,6 +10,15 @@ using std::random_device;
 using std::default_random_engine;
 using std::uniform_int_distribution;
 
+// ==================== Node Class ====================
+struct Node {
+	int data;
+	Node *left, *right;
+
+	Node() { data = 0; left = right = nullptr; }
+	Node(int val) { data = val; left = right = nullptr; }
+};
+
 // ==================== Test Function ====================
 void runTest();
 
@@ -18,6 +27,7 @@ void bubbleSort(int *, int);
 void insertionSort(int *, int);
 void mergeSort(int *, int, int);
 void heapSort(int *, int);
+void bstSort(int *, int);
 
 // ==================== Helper Functions ====================
 void swap(int &, int &);
@@ -28,6 +38,8 @@ int getRightChild(int);
 void shiftUp(int *, int);
 void shiftDown(int *, int, int);
 int extractMin(int *, int);
+void addToTree(Node *, int);
+void fillSorted(int *, Node *);
 
 // ==================== MAIN ====================
 int main() {
@@ -64,7 +76,7 @@ void runTest() {
 	startTime = clock();
 	bubbleSort(testingArr, SIZE);
 	endTime = clock();
-	cout << "Bubble Sort Runtime: " << endTime - startTime << endl;
+	cout << "Bubble Sort Runtime: " << endTime - startTime << endl << endl;
 	/*cout << "Bubble Sort Result: " << endl;
 	for (int i = 0; i < SIZE; ++i) {
 		cout << testingArr[i] << ' ';
@@ -79,7 +91,7 @@ void runTest() {
 	startTime = clock();
 	insertionSort(testingArr, SIZE);
 	endTime = clock();
-	cout << "Insertion Sort Runtime: " << endTime - startTime << endl;
+	cout << "Insertion Sort Runtime: " << endTime - startTime << endl << endl;
 	/*cout << "Insertion Sort Result: " << endl;
 	for (int i = 0; i < SIZE; ++i) {
 		cout << testingArr[i] << ' ';
@@ -94,7 +106,7 @@ void runTest() {
 	startTime = clock();
 	mergeSort(testingArr, 0, SIZE - 1);
 	endTime = clock();
-	cout << "Merge Sort Runtime: " << endTime - startTime << endl;
+	cout << "Merge Sort Runtime: " << endTime - startTime << endl << endl;
 	/*cout << "Merge Sort Result: " << endl;
 	for (int i = 0; i < SIZE; ++i) {
 		cout << testingArr[i] << ' ';
@@ -109,8 +121,23 @@ void runTest() {
 	startTime = clock();
 	heapSort(testingArr, SIZE);
 	endTime = clock();
-	cout << "Heap Sort Runtime: " << endTime - startTime << endl;
+	cout << "Heap Sort Runtime: " << endTime - startTime << endl << endl;
 	/*cout << "Heap Sort Result: " << endl;
+	for (int i = 0; i < SIZE; ++i) {
+		cout << testingArr[i] << ' ';
+		if ((i + 1) % 10 == 0) cout << endl;
+	}*/
+
+	// ==================== BST Sort ====================
+	for (int i = 0; i < SIZE; ++i) {
+		testingArr[i] = inputArr[i];
+	}
+	cout << "Starting BST Sort" << endl;
+	startTime = clock();
+	bstSort(testingArr, SIZE);
+	endTime = clock();
+	cout << "BST Sort Runtime: " << endTime - startTime << endl << endl;
+	/*cout << "BST Sort Result: " << endl;
 	for (int i = 0; i < SIZE; ++i) {
 		cout << testingArr[i] << ' ';
 		if ((i + 1) % 10 == 0) cout << endl;
@@ -160,6 +187,17 @@ void heapSort(int *arr, int size) {
 	for (int i = 0; i < size; ++i) {
 		arr[i] = extractMin(heapArr, size - i);
 	}
+}
+
+void bstSort(int *arr, int size) {
+	Node *root = new Node(arr[0]);
+
+	for (int i = 1; i < size; ++i) {
+		addToTree(root, arr[i]);
+	}
+
+	
+	fillSorted(arr, root);
 }
 
 // ==================== Helper Functions ====================
@@ -257,4 +295,35 @@ int extractMin(int *heap, int size) {
 	shiftDown(heap, 0, size - 1);
 
 	return heap[size - 1];
+}
+
+void addToTree(Node *node, int value) {
+	if (value < node->data) {
+		if (node->left != nullptr) {
+			addToTree(node->left, value);
+		}
+		else {
+			node->left = new Node(value);
+		}
+	}
+	else {
+		if (node->right != nullptr) {
+			addToTree(node->right, value);
+		}
+		else {
+			node->right = new Node(value);
+		}
+	}
+}
+
+void fillSorted(int *arr, Node *node) {
+	static int index = 0;
+
+	if (node->left != nullptr) {
+		fillSorted(arr, node->left);
+	}
+	arr[index++] = node->data;
+	if (node->right != nullptr) {
+		fillSorted(arr, node->right);
+	}
 }
