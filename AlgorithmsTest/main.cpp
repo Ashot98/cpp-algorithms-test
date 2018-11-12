@@ -28,6 +28,8 @@ void insertionSort(int *, int);
 void mergeSort(int *, int, int);
 void heapSort(int *, int);
 void bstSort(int *, int);
+void countingSort(int *, int, int);
+void radixSort(int *, int, int);
 
 // ==================== Helper Functions ====================
 void swap(int &, int &);
@@ -142,6 +144,36 @@ void runTest() {
 		cout << testingArr[i] << ' ';
 		if ((i + 1) % 10 == 0) cout << endl;
 	}*/
+
+	// ==================== Counting Sort ====================
+	for (int i = 0; i < SIZE; ++i) {
+		testingArr[i] = inputArr[i];
+	}
+	cout << "Starting Counting Sort" << endl;
+	startTime = clock();
+	countingSort(testingArr, SIZE, RANGE);
+	endTime = clock();
+	cout << "Counting Sort Runtime: " << endTime - startTime << endl << endl;
+	/*cout << "Counting Sort Result: " << endl;
+	for (int i = 0; i < SIZE; ++i) {
+	cout << testingArr[i] << ' ';
+	if ((i + 1) % 10 == 0) cout << endl;
+	}*/
+
+	// ==================== Radix Sort ====================
+	for (int i = 0; i < SIZE; ++i) {
+		testingArr[i] = inputArr[i];
+	}
+	cout << "Starting Radix Sort" << endl;
+	startTime = clock();
+	radixSort(testingArr, SIZE, RANGE);
+	endTime = clock();
+	cout << "Radix Sort Runtime: " << endTime - startTime << endl << endl;
+	cout << "Radix Sort Result: " << endl;
+	for (int i = 0; i < SIZE; ++i) {
+		cout << testingArr[i] << ' ';
+		if ((i + 1) % 10 == 0) cout << endl;
+	}
 }
 
 // ==================== Sorting Functions ====================
@@ -198,6 +230,49 @@ void bstSort(int *arr, int size) {
 
 	
 	fillSorted(arr, root);
+}
+
+void countingSort(int *arr, int size, int maxElem) {
+	int *counts = new int[maxElem];
+	for (int i = 0; i < maxElem; ++i) {
+		counts[i] = 0;
+	}
+
+	for (int i = 0; i < size; ++i) {
+		++counts[arr[i]];
+	}
+
+	int index = 0;
+	for (int i = 0; i < maxElem; ++i) {
+		for (int j = 0; j < counts[i]; ++j) {
+			arr[index++] = i;
+		}
+	}
+}
+
+void radixSort(int *arr, int size, int maxElem) {
+	for (int i = 1; maxElem / i > 0; i *= 10) {
+		int counts[10] = { 0 };
+
+		for (int j = 0; j < size; ++j) {
+			++counts[arr[j] / i % 10];
+		}
+
+		for (int j = 1; j < 10; ++j) {
+			counts[j] += counts[j - 1];
+		}
+
+		int *outputArr = new int[size];
+		for (int j = size - 1; j >= 0; --j) {
+			outputArr[counts[arr[j] / i % 10] - 1] = arr[j];
+			--counts[arr[j] / i % 10];
+		}
+
+		for (int j = 0; j < size; ++j) {
+			arr[j] = outputArr[j];
+		}
+	}
+
 }
 
 // ==================== Helper Functions ====================
